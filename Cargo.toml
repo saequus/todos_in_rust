@@ -1,0 +1,8 @@
+[package]
+name = "temp1"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rustfmt = "0.10.0"
+serde_json = "1.0.120"
