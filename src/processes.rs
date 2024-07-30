@@ -5,6 +5,7 @@ use super::to_do::traits::delete::Delete;
 use super::to_do::traits::edit::Edit;
 use super::to_do::traits::get::Get;
 use super::to_do::ItemTypes;
+use super::to_do::enums::TaskStatus;
 use serde_json::value::Value;
 use serde_json::Map;
 
@@ -19,5 +20,22 @@ fn process_pending(item: Pending, command: String, state: &Map<String, Value>) {
         ),
         "edit" => item.set_to_done(&item.super_struct.title, &mut state),
         _ => println!("command: {} not supported", command),
+    }
+}
+
+fn process_done(item: Done, command: String, state: &Map<String, Value>) {
+    let mut state = state.clone();
+    match command.as_str() {
+        "get" => item.get(&item.super_struct.title, &state),
+        "delete" => item.delete(&item.super_struct.title, &mut state),
+        "edit" => item.set_to_pending(&item.super_struct.title, &mut state),
+        _ => println!("command: {} not supported", command),
+    }
+}
+
+pub fn process_input(item: ItemTypes, command: String, state: &Map<String, Value>) {
+    match item {
+        ItemTypes::Pending(item) => process_pending(item, command, state),
+        ItemTypes::Done(item) => process_done(item, command, state)
     }
 }
